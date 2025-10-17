@@ -38,7 +38,7 @@
 
 
 [2] CSS 수신 → 스타일 처리
-- <link>로 로드된 CSS도 동시에 파싱되며 → CSSOM Tree 생성됨
+- link로 로드된 CSS도 동시에 파싱되며 → CSSOM Tree 생성됨
 - 이건 “각 DOM 요소에 어떤 스타일이 적용되어야 하는가?“를 나타냄
 
 [3] DOM + CSSOM → Render Tree 생성
