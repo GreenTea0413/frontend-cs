@@ -67,7 +67,7 @@
 ⸻
 
 🔄 전체 흐름 다이어그램으로 정리
-
+```
 HTML 파싱
    ↓
 DOM 생성       ← JS 실행 (필요 시 DOM 조작)
@@ -81,5 +81,5 @@ DOM + CSSOM → Render Tree
 Layout → Paint → Composite
    ↓
 🖥️ 화면 출력
-
+```
 ⸻
