@@ -54,7 +54,6 @@ a(); // 실행 순서: a → b → c
 - Web API에서 완료된 비동기 작업의 콜백 함수가 들어가는 곳
 - 대기열 형태이며, FIFO (First-In, First-Out) 구조
 - setTimeout, setInterval, UI 이벤트 등 일반적인 비동기 작업의 콜백이 여기에 들어감
-
   - Promise의 .then()이나 async/await는 이 큐에 들어가지 않음
     -> 그건 Microtask Queue라는 별도 큐에 들어감
 
