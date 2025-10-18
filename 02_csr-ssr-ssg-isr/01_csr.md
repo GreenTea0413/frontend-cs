@@ -4,7 +4,7 @@
 
 HTML, CSS, JavaScript를 모두 클라이언트(브라우저)에서 처리해 화면을 구성하는 방식
 - 최초 요청 시 서버는 빈 HTML 껍데기와 JavaScript 파일만 전달
-- 이후 JavaScript가 동작하면서 데이터를 불러오고, 화면을 브라우저에서 동적으로 구성
+- 이후 JavaScript가 동작하면서 데이터를 불러오고 화면을 브라우저에서 동적으로 구성
 - React, Vue, Angular 등의 SPA(Single Page Application) 프레임워크가 사용하는 기본 렌더링 방식
 
 ⸻
@@ -48,7 +48,7 @@ function App() {
   return <div>{data ? data.message : "로딩 중..."}</div>;
 }
 ```
-- 서버는 /api/data만 제공하고, 렌더링은 브라우저가 직접 수행함
+- 서버는 /api/data만 제공하고 렌더링은 브라우저가 직접 수행함
 
 ⸻
 
@@ -69,3 +69,9 @@ function App() {
 ### 🧠 실제 사용 사례
 - 대시보드, 웹앱 등 사용자 로그인 후 콘텐츠가 주로 변화하는 서비스
 - 예: Gmail, Notion, Trello 등
+
+⸻
+### 📝 요약
+- CSR은 브라우저에서 렌더링을 처리하는 방식
+- 유연하고 상호작용이 많은 SPA에 적합하지만 초기 속도와 SEO 측면에서는 단점이 있음
+- 초기 로딩보다는 이후 사용자 경험이 중요한 서비스에 권장됨
