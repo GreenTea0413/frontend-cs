@@ -3,6 +3,8 @@
 ## SPA (Single Page Application)
 - 단일 HTML 파일에서 동작하는 웹 애플리케이션
 - 페이지 전환 시 브라우저가 전체 페이지를 다시 요청하지 않고 자바스크립트가 라우팅을 처리하고 필요한 데이터만 받아와서 화면을 갱신
+- `history.pushState` 등으로 브라우저 주소만 바꾸고 JS가 뷰만 갱신  
+- 전체 새로고침 없음
 - 대표 프레임워크: React, Vue, Angular
 
   - 예: example.com/dashboard → 전체 페이지 새로고침 없이 JS로 화면만 변경
@@ -11,7 +13,7 @@
 
 ## MPA (Multi Page Application)
 - 페이지마다 별도의 HTML 파일을 서버에서 받아오는 전통적인 웹 방식
-- URL이 바뀔 때마다 서버에 새 요청을 보내고 전체 페이지를 새로 로드
+- URL이 바뀔 때마다 서버에 새 요청을 보내고 전체 HTML 페이지를 새로 로드
 - 대표 프레임워크: Spring MVC, Django, PHP 등 서버 렌더링 기반 앱
 
   - 예: example.com/login → 로그인하면 example.com/mypage로 이동하며 전체 페이지 새로고침 발생
