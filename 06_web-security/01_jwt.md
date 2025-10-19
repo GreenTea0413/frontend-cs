@@ -55,7 +55,6 @@ HMACSHA256(
 `Authorization: Bearer <JWT토큰>`
 - 요청 보낼 때 해당 부분을 추가해서 보내면 됨
 
-
 ⸻
 
 ### JWT 장점 vs 단점
@@ -76,6 +75,7 @@ HMACSHA256(
 - 너무 긴 유효 시간은 ❌, 짧은 만료시간 + Refresh Token 전략을 병행하는 것이 일반적
 
 ⸻
+
 ### Access Token vs Refresh Token
 
 | 항목 | Access Token | Refresh Token |
@@ -95,15 +95,16 @@ HMACSHA256(
 프로젝트하면서 해당 그림과 동일하게 구현
 
 <br>
-1. 사용자 로그인
-2. 서버에서 Access + Refresh Token 발급
-3. Access는 클라이언트 저장, Refresh는 HttpOnly 쿠키에 저장
-4. API 요청 시 Access Token 사용
-5. Access Token이 만료되면 → Refresh Token으로 재발급 요청
-6. 서버가 Refresh Token 검증 후 새 Access Token 반환
+1. 사용자 로그인<br>
+2. 서버에서 Access + Refresh Token 발급<br>
+3. Access는 클라이언트 저장, Refresh는 HttpOnly 쿠키에 저장<br>
+4. API 요청 시 Access Token 사용<br>
+5. Access Token이 만료되면 → Refresh Token으로 재발급 요청<br>
+6. 서버가 Refresh Token 검증 후 새 Access Token 반환<br>
 7. Refresh Token까지 만료 시 → 로그인 페이지로 이동
 
 ⸻
+
 ### 언제 쓰면 좋을까?
 
 | 조건 | JWT 사용 적합 여부 |
