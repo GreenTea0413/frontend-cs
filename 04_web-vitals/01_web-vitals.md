@@ -64,9 +64,3 @@ Vue.js -> Next.js
 - LCP, FID, CLS는 가장 중요한 Core Web Vitals로 각각 로딩 속도, 입력 반응성, 레이아웃 안정성을 나타냄
 - 성능 최적화는 지표 기반으로 측정하고 lazy load, prefetch, 캐싱, 이미지 최적화, 코드 분할 등을 조합하여 개선함
 
-⸻
-
-### 🔗 참고 자료
-- Google Web Vitals 공식 사이트
-- PageSpeed Insights
-- Lighthouse 사용법 (MDN)
