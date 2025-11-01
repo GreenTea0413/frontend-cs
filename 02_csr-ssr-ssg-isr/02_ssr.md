@@ -23,21 +23,17 @@ React 기반 프레임워크인 Next.js에서 대표적으로 SSR을 사용
 
 ### 예제 코드 (Next.js)
 ```
-// pages/index.tsx
-export async function getServerSideProps() {
-  const res = await fetch("https://api.example.com/data");
-  const data = await res.json();
+// app/page.tsx
+export default async function HomePage() {
+  const res = await fetch('https://api.example.com/data', {
+    cache: 'no-store', // SSR
+  })
+  const data = await res.json()
 
-  return {
-    props: { data },
-  };
-}
-
-export default function Home({ data }) {
-  return <div>{data.message}</div>;
+  return <div>{data.message}</div>
 }
 ```
-- getServerSideProps 함수가 요청마다 실행되어 서버에서 HTML을 생성함
+- fetch()에 cache: 'no-store' 옵션을 주면 → SSR처럼 매 요청마다 fresh fetch
 
 ⸻
 
@@ -63,9 +59,9 @@ export default function Home({ data }) {
 ⸻
 
 ### 📝 요약
-	•	SSR은 서버가 HTML을 완성해 보내주는 방식으로 빠른 초기 렌더링과 SEO에 유리!
-	•	하지만 서버 부하와 속도 저하를 고려해야 하며 적절한 캐싱이 중요함
-	•	실시간 데이터와 SEO가 모두 중요한 서비스에 적합함
+- SSR은 서버가 HTML을 완성해 보내주는 방식으로 빠른 초기 렌더링과 SEO에 유리!
+- 하지만 서버 부하와 속도 저하를 고려해야 하며 적절한 캐싱이 중요함
+- 실시간 데이터와 SEO가 모두 중요한 서비스에 적합함
 
 ⸻
 ### SSR에서 사용되는 복잡한 캐싱 전략들
@@ -144,11 +140,4 @@ await redis.set("page:123", html, { EX: 60 });
 | 실시간성이 중요한 뉴스 페이지   | SWR (Stale-While-Revalidate)                              |
 | 변하지 않는 정보                 | 정적 HTML로 프리렌더링 (SSG로 대체하는 것도 고려 가능)   |
 
-
-⸻
-
-### 요약
-- SSR은 매 요청마다 렌더링되므로 캐싱 없이는 비효율적
-- 단순히 “메모리에 저장”하는 수준이 아니라 “언제, 어디에, 얼마나 오래 저장할지”에 대한 전략이 중요
-- 실무에서는 Redis, CDN, ISR 등의 조합으로 계층 캐싱을 활용
 
