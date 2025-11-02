@@ -368,6 +368,7 @@ export default function UserProfile() {
 - user === null이면 아직 로딩 전 → 버튼 눌러서 수동 fetch
 - user가 있으면 이름을 보여주고, 버튼으로 이름 변경 요청
 - updateUser() 이후 userState가 바뀌므로 자동으로 UI 업데이트됨
+  
 ✅ 장점
 - 비동기 처리와 파생 상태(selector)가 강력
 - 컴포넌트 단위로 세분화된 상태 관리 가능
