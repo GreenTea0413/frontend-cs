@@ -321,23 +321,7 @@ export const userState = atom({
 - Recoil의 전역 상태 저장소
 - 유저 정보를 null로 초기화함 (앱 시작 시 아무 정보 없음)
 - 이후 setUser()로 업데이트 가능
-```
-// recoil/userSelector.ts
-import { selector } from 'recoil';
-import { getUserInfo } from '@/services/userService';
-import { userState } from './userAtom';
 
-export const fetchUserSelector = selector({
-  key: 'fetchUserSelector',
-  get: async () => {
-    const res = await getUserInfo();
-    return res.data;
-  },
-});
-```
-- Recoil이 제공하는 비동기 selector
-- 이건 useRecoilValue(fetchUserSelector)처럼 사용 가능
-- 다만 지금 코드에서는 사용 안 하고 useUser() 내부에서 직접 fetchUser() 호출하는 방식임
 ```
 // hooks/useUser.ts
 import { useRecoilState, useSetRecoilState } from 'recoil';
