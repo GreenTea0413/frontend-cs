@@ -1,6 +1,6 @@
 # ⚖️ React 상태 관리 라이브러리 비교
 
-## 1. ✅ Redux
+## 1. Redux
 
 ### 특징
 - 가장 널리 알려진 상태 관리 라이브러리
@@ -43,6 +43,100 @@ export default function Counter() {
   )
 }
 ```
+
+### 추가 예시
+
+```
+// store/userSlice.ts
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getUserInfo, updateUserInfo } from '@/services/userService';
+
+export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
+  const response = await getUserInfo();
+  return response.data;
+});
+
+export const updateUser = createAsyncThunk('user/updateUser', async (newInfo) => {
+  const response = await updateUserInfo(newInfo);
+  return response.data;
+});
+
+const userSlice = createSlice({
+  name: 'user',
+  initialState: {
+    user: null,
+    status: 'idle', // 'loading', 'succeeded', 'failed'
+    error: null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user = action.payload;
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload; // 업데이트 후 최신 정보로 갱신
+      });
+  },
+});
+
+export default userSlice.reducer;
+
+```
+- createAsyncThunk : 비동기 요청을 간단하게 처리하게 해주는 Redux Toolkit 함수
+  - pending(로딩), fulfilled(성공), rejected(실패)는 Redux Toolkit의 createAsyncThunk()를 사용할 때 비동기 작업의 상태 
+- initialState: 처음 Redux 상태를 정의. 유저 정보 없고, status는 ‘idle’
+- extraReducers: createAsyncThunk에서 만든 비동기 액션들에 대해 각각의 상태를 정의 (예: 로딩 중, 성공, 실패)
+- fetchUser, updateUser는 각각 API 요청을 트리거하고, 응답이 오면 상태를 바꾸는 로직이 여기 있음
+  
+```
+// components/ProfilePage.tsx
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser, updateUser } from '@/store/userSlice';
+
+export default function ProfilePage() {
+  const dispatch = useDispatch();
+  const { user, status } = useSelector((state: any) => state.user);
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
+
+  const handleUpdate = async () => {
+    await dispatch(updateUser({ name: '보성 김', email: 'bosung@email.com' }));
+    dispatch(fetchUser()); // 다시 불러와 최신화 시켜주기
+  };
+
+  if (status === 'loading') return <div>로딩 중...</div>;
+  if (!user) return <div>유저 정보 없음</div>;
+
+  return (
+    <div>
+      <p>이름: {user.name}</p>
+      <p>이메일: {user.email}</p>
+      <button onClick={handleUpdate}>정보 수정</button>
+    </div>
+  );
+}
+```
+
+useDispatch()
+- Redux store에 액션을 발행(dispatch) 하는 함수
+- dispatch(fetchUser()) 하면 비동기 요청이 시작됨
+  
+useSelector()
+- Redux 상태 중에서 필요한 데이터(user 등) 를 꺼내옴
+- 상태가 바뀌면 컴포넌트가 자동으로 리렌더링 됨
+
 ✅ 장점
 - 가장 안정적이고 성숙한 생태계
 - 미들웨어, DevTools, 비동기 처리 등 확장성 강력
@@ -54,7 +148,7 @@ export default function Counter() {
 
 ⸻
 
-## 2. ✅ Zustand
+## 2. Zustand
 
 ### 특징
 - Hook 기반의 상태 관리
@@ -95,6 +189,79 @@ export default function Counter() {
   )
 }
 ```
+
+### 추가 예시
+
+```
+// stores/useUserStore.ts
+import { create } from 'zustand'
+import { getUserInfo, updateUserInfo } from '@/services/userService'
+
+// 유저가 있다고 가정하고
+// 여긴 Store에 인터페이스를 미리 구축
+interface UserStore {
+  user: User | null
+  loading: boolean
+  error: string | null
+
+  fetchUser: () => Promise<void>
+  updateUser: (newInfo: Partial<User>) => Promise<void>
+}
+
+export const useUserStore = create<UserStore>((set) => ({
+  user: null,
+  loading: false,
+  error: null,
+
+  fetchUser: async () => {
+    set({ loading: true, error: null })
+    try {
+      const res = await getUserInfo()
+      set({ user: res.data, loading: false })
+    } catch (err: any) {
+      set({ error: err.message || '에러 발생', loading: false })
+    }
+  },
+
+  updateUser: async (newInfo) => {
+    set({ loading: true, error: null })
+    try {
+      const res = await updateUserInfo(newInfo)
+      set({ user: res.data, loading: false })
+    } catch (err: any) {
+      set({ error: err.message || '에러 발생', loading: false })
+    }
+  },
+}))
+```
+
+```
+// components/UserProfile.tsx
+'use client'
+
+import { useUserStore } from '@/stores/useUserStore'
+import { useEffect } from 'react'
+
+export default function UserProfile() {
+  const { user, loading, error, fetchUser, updateUser } = useUserStore()
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
+
+  if (loading) return <p>로딩 중...</p>
+  if (error) return <p>에러 발생: {error}</p>
+  if (!user) return null
+
+  return (
+    <div>
+      <p>이름: {user.name}</p>
+      <p>이메일: {user.email}</p>
+      <button onClick={() => updateUser({ name: '홍길동' })}>이름 수정</button>
+    </div>
+  )
+}
+```
 ✅ 장점
 - 코드량이 매우 적고 직관적
 - Redux보다 러닝 커브가 낮음
@@ -106,7 +273,7 @@ export default function Counter() {
 
 ⸻
 
-## 3. ✅ Recoil
+## 3. Recoil
 
 ### 특징
 - Facebook에서 개발한 상태 관리 라이브러리
@@ -139,7 +306,84 @@ export default function Counter() {
     </div>
   )
 }
+
 ```
+### 추가 예시
+```
+// recoil/userAtom.ts
+import { atom } from 'recoil';
+
+export const userState = atom({
+  key: 'userState',
+  default: null, // 최초엔 데이터 없음
+});
+```
+- Recoil의 전역 상태 저장소
+- 유저 정보를 null로 초기화함 (앱 시작 시 아무 정보 없음)
+- 이후 setUser()로 업데이트 가능
+```
+// recoil/userSelector.ts
+import { selector } from 'recoil';
+import { getUserInfo } from '@/services/userService';
+import { userState } from './userAtom';
+
+export const fetchUserSelector = selector({
+  key: 'fetchUserSelector',
+  get: async () => {
+    const res = await getUserInfo();
+    return res.data;
+  },
+});
+```
+- Recoil이 제공하는 비동기 selector
+- 이건 useRecoilValue(fetchUserSelector)처럼 사용 가능
+- 다만 지금 코드에서는 사용 안 하고 useUser() 내부에서 직접 fetchUser() 호출하는 방식임
+```
+// hooks/useUser.ts
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { userState } from '@/recoil/userAtom';
+import { getUserInfo, updateUserInfo } from '@/services/userService';
+
+export function useUser() {
+  const [user, setUser] = useRecoilState(userState);
+
+  const fetchUser = async () => {
+    const res = await getUserInfo();
+    setUser(res.data);
+  };
+
+  const updateUser = async (newInfo) => {
+    const res = await updateUserInfo(newInfo);
+    setUser(res.data); // 최신 정보로 업데이트
+  };
+
+  return { user, fetchUser, updateUser };
+}
+```
+-	useRecoilState(userState) → 상태 읽기 & 쓰기 동시 사용
+- fetchUser() → 서버에서 유저 정보 불러와서 setUser()로 전역 상태 갱신
+- updateUser() → 서버에 수정 요청 보내고 결과로 다시 상태 갱신
+```
+// components/UserProfile.tsx
+import { useUser } from '@/hooks/useUser';
+
+export default function UserProfile() {
+  const { user, fetchUser, updateUser } = useUser();
+
+  if (!user) return <button onClick={fetchUser}>유저 정보 불러오기</button>;
+
+  return (
+    <div>
+      <p>이름: {user.name}</p>
+      <button onClick={() => updateUser({ name: '보성' })}>이름 변경</button>
+    </div>
+  );
+}
+
+```
+- user === null이면 아직 로딩 전 → 버튼 눌러서 수동 fetch
+- user가 있으면 이름을 보여주고, 버튼으로 이름 변경 요청
+- updateUser() 이후 userState가 바뀌므로 자동으로 UI 업데이트됨
 ✅ 장점
 - 비동기 처리와 파생 상태(selector)가 강력
 - 컴포넌트 단위로 세분화된 상태 관리 가능
