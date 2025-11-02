@@ -92,9 +92,10 @@ export default userSlice.reducer;
 
 ```
 - createAsyncThunk : 비동기 요청을 간단하게 처리하게 해주는 Redux Toolkit 함수
-  - pending(로딩), fulfilled(성공), rejected(실패)는 Redux Toolkit의 createAsyncThunk()를 사용할 때 비동기 작업의 상태 
+  - pending(로딩), fulfilled(성공), rejected(실패)는 Redux Toolkit의 createAsyncThunk()를 사용할 때 비동기 작업의 상태
 - initialState: 처음 Redux 상태를 정의. 유저 정보 없고, status는 ‘idle’
 - extraReducers: createAsyncThunk에서 만든 비동기 액션들에 대해 각각의 상태를 정의 (예: 로딩 중, 성공, 실패)
+  - reducer는 일반 액션 처리(동기), extra는 비동기 액션처리로 이 정도 알면 될 듯
 - fetchUser, updateUser는 각각 API 요청을 트리거하고, 응답이 오면 상태를 바꾸는 로직이 여기 있음
   
 ```
