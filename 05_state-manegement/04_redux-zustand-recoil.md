@@ -279,6 +279,8 @@ export default function UserProfile() {
 ### 특징
 - Facebook에서 개발한 상태 관리 라이브러리
 - atom과 selector로 상태를 정의
+  - atom : 기본 상태 저장소
+  - selector : 계산된 값(파생 상태) 또는 비동기 요청용, 여러 atom을 조합하거나 변형할 때 사용
 - React 전용 라이브러리 (Context 기반)
 
 ### 사용 예시
@@ -308,6 +310,16 @@ export default function Counter() {
   )
 }
 
+```
+이건 selector
+```
+export const userNameSelector = selector({
+  key: 'userNameSelector',
+  get: ({ get }) => {
+    const user = get(userState);
+    return user?.name;
+  },
+});
 ```
 ### 추가 예시
 ```
